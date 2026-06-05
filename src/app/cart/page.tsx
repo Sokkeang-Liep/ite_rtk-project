@@ -3,10 +3,10 @@ import { FaShoppingCart } from "react-icons/fa";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
-import { addToCart, removeFromCart } from "@/features/count/cartSlice";
+
 import { IoIosAddCircle } from "react-icons/io";
 import { FaMinus } from "react-icons/fa6";
-import Image from "next/image";
+import { addToCart, removeFromCart } from "@/features/countSlice/cartSlice";
 
 export default function CartPage() {
   const cart = useSelector((state: RootState) => state.cart.items);
@@ -17,72 +17,72 @@ export default function CartPage() {
   const products = [
     {
       id: 1,
-      name: "Monstera Deliciosa",
-      image: "https://images.unsplash.com/photo-1545241047-6083a3684587?w=500",
-      price: 25,
+      name: "Nike Air Max 270",
+      image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500",
+      price: 100,
     },
     {
       id: 2,
-      name: "Snake Plant",
+      name: "Adidas Ultraboost",
       image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQGrs3k0stcZCm1r01diPV70u1LJh40ObwvfQ&s",
-      price: 18,
+        "https://images.unsplash.com/photo-1600185365926-3a2ce3cdb9eb?w=500",
+      price: 180,
     },
     {
       id: 3,
-      name: "Peace Lily",
+      name: "Puma RS-X",
       image:
-        "https://images.unsplash.com/photo-1501004318641-b39e6451bec6?w=500",
-      price: 22,
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTnhwnl43WuYPEn0XCOwBvEOHf1d1yaFlmYkw&s",
+      price: 220,
     },
     {
       id: 4,
-      name: "Aloe Vera",
+      name: "Nike Jordan Retro",
       image:
-        "https://images.unsplash.com/photo-1466692476868-aef1dfb1e735?w=500",
-      price: 15,
+        "https://m.media-amazon.com/images/G/01/zappos/2026/Homepage/June/06.03.26/HP-VIS-NAV-SUMMER-MILES-ON-444X555-FRAME1._FMwebp_QL85_.jpg",
+      price: 150,
     },
     {
       id: 5,
-      name: "Fiddle Leaf Fig",
+      name: "Sneaker Shoes",
       image:
-        "https://images.unsplash.com/photo-1485955900006-10f4d324d411?w=500",
-      price: 35,
+        "https://starlet.pk/cdn/shop/articles/457096566_816328697331693_5537305557894720667_n_70e662a9-a9f4-4b2b-8ba7-3217aa6dd055.jpg?v=1740545518",
+      price: 70,
     },
     {
       id: 6,
-      name: "Rubber Plant",
+      name: "Vans Old Skool",
       image:
-        "https://images.unsplash.com/photo-1512428813834-c702c7702b78?w=500",
-      price: 28,
+        "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=500",
+      price: 100,
     },
     {
       id: 7,
-      name: "ZZ Plant",
+      name: "LEVEL White Men's Sneakers",
       image:
-        "https://images.unsplash.com/photo-1520412099551-62b6bafeb5bb?w=500",
-      price: 20,
+        "https://www.campusshoes.com/cdn/shop/files/LEVEL_LEVEL_WHT-L.GRY_07_831c7a2c-ff1b-4011-9268-b11f984219c6.webp?v=1757580207",
+      price: 200,
     },
     {
       id: 8,
-      name: "Pothos Golden",
+      name: "Athletic Shoes",
       image:
-        "https://images.unsplash.com/photo-1483794344563-d27a8d18014e?w=500",
-      price: 17,
+        "https://underarmour.scene7.com/is/image/Underarmour/SS26_Q1_Velociti_Elite3_Launch_COG_ATT_Bucket_1_1?qlt=85&wid=767&hei=767",
+      price: 90,
     },
     {
       id: 9,
-      name: "Boston Fern",
+      name: "Dark Grey Faux Suede",
       image:
-        "https://images.unsplash.com/photo-1463936575829-25148e1db1b8?w=500",
+        "https://offlimits.co.in/cdn/shop/files/OCM-64305_1_1200x1200.jpg?v=1720259294",
       price: 24,
     },
     {
       id: 10,
-      name: "Chinese Money Plant",
+      name: "Asics Gel-Kayano",
       image:
-        "https://images.unsplash.com/photo-1497250681960-ef046c08a56e?w=500",
-      price: 19,
+        "https://images.unsplash.com/photo-1605408499391-6368c628ef42?w=500",
+      price: 190,
     },
   ];
 
@@ -103,45 +103,69 @@ export default function CartPage() {
         </Link>
       </div>
       <div className="grid grid-cols-5 gap-y-4 container mx-auto max-w-7xl">
-        {products.map((product) => (
-          <div
-            key={product.id}
-            className="border p-4 rounded-lg w-60 flex flex-col gap-2"
+        {products.map((product) => {
+  const inCart = cart.find((item) => item.id === product.id);
+
+  return (
+    <div
+      key={product.id}
+      className="group bg-white border rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 w-60"
+    >
+      {/* Image */}
+      <div className="relative h-40 overflow-hidden">
+        <img
+          src={product.image}
+          alt={product.name}
+          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+        />
+
+        {/* price badge */}
+        <div className="absolute top-2 left-2 bg-black/70 text-white text-xs px-2 py-1 rounded-full">
+          ${product.price}
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="p-3 flex flex-col gap-2">
+        <h3 className="font-semibold text-gray-800 truncate">
+          {product.name}
+        </h3>
+
+        <p className="text-xs text-gray-500">
+          Indoor plant • Fresh & natural
+        </p>
+
+        {/* Buttons */}
+        <div className="flex items-center justify-between mt-2">
+          <button
+            onClick={() =>
+              dispatch(
+                addToCart({
+                  ...product,
+                  quantity: 1,
+                })
+              )
+            }
+            className="flex items-center gap-1 bg-green-600 hover:bg-green-700 text-white text-xs px-3 py-1.5 rounded-full transition"
           >
-            <Image
-              src={product.image}
-              alt={product.name}
-              className="w-full h-40 object-cover rounded"
-            />
+            <IoIosAddCircle className="text-lg" />
+            Add
+          </button>
 
-            <h3 className="font-bold">{product.name}</h3>
-            <p>Price: ${product.price}</p>
-
-            <div className="flex gap-2">
-              <button
-                className="bg-blue-600 cursor-pointer active:bg-blue-400 text-white px-3 w-6 h-6 grid place-content-center rounded-full"
-                onClick={() =>
-                  dispatch(
-                    addToCart({
-                      ...product,
-                      quantity: 1,
-                    }),
-                  )
-                }
-              >
-                <IoIosAddCircle />
-              </button>
-              {cart.find((item) => item.id === product.id) && (
-                <button
-                  className="bg-red-500 active:bg-red-400 cursor-pointer text-white w-6 h-6 grid place-content-center rounded-full"
-                  onClick={() => dispatch(removeFromCart(product.id))}
-                >
-                  <FaMinus />
-                </button>
-              )}
-            </div>
-          </div>
-        ))}
+          {inCart && (
+            <button
+              onClick={() => dispatch(removeFromCart(product.id))}
+              className="flex items-center gap-1 bg-red-500 hover:bg-red-600 text-white text-xs px-3 py-1.5 rounded-full transition"
+            >
+              <FaMinus />
+              Remove
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+})}
       </div>
     </div>
   );

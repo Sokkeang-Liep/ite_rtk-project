@@ -1,3 +1,4 @@
+"use client";
 import ButtonComponent from "@/components/ButtonComponent";
 import { addToCart } from "@/features/countSlice/cartSlice";
 import { useDispatch } from "react-redux";

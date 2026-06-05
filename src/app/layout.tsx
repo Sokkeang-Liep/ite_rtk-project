@@ -27,9 +27,13 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
-      <StoreProvider>
-        <body className="min-h-full flex flex-col">{children}</body>
+    ><StoreProvider>
+        <body>
+          <header className=" container mx-auto fixed z-99 top-2.5">
+           
+          </header>
+          <main> {children}</main>
+        </body>
       </StoreProvider>
     </html>
   );

@@ -2,10 +2,16 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { addToCart, removeFromCart } from "@/features/countSlice/cartSlice";
 
+type CartItem = {
+  id: number;
+  name: string;
+  price: number;
+  quantity: number;
+};
 
 export default function CartPage() {
   const dispatch = useDispatch();
-  const cart = useSelector((state: RootState) => state.cart.items);
+  const cart = useSelector<RootState, CartItem[]>((state) => state.cart.items);
 
   return (
     <div>
@@ -27,6 +33,7 @@ export default function CartPage() {
                 addToCart({
                   ...item,
                   quantity: 1,
+                  image: ""
                 })
               )
             }
