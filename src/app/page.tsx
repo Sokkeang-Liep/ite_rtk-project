@@ -2,6 +2,7 @@
 import ButtonComponent from "@/components/ButtonComponent";
 import { addToCart } from "@/features/countSlice/cartSlice";
 import { useDispatch } from "react-redux";
+import ProductPage from "./products/page";
 
 export default function Home() {
   const dispatch = useDispatch();
@@ -10,7 +11,7 @@ export default function Home() {
     <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
      
 
-      <ButtonComponent />
+      {/* <ButtonComponent />
       <button
         onClick={() =>
           dispatch(
@@ -25,7 +26,12 @@ export default function Home() {
         }
       >
         Add To Cart
-      </button>
+      </button> */}
+
+      <ProductPage/>
+
+
+
     </div>
   );
 }

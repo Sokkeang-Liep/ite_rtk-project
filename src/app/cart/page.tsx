@@ -91,13 +91,14 @@ export default function CartPage() {
       <div className="flex gap-6  items-center mb-6">
         <Link href="/carts" className="relative z-100">
           <div className="text-xl flex justify-center items-center gap-4 font-bold">
-            My Cart : <FaShoppingCart className="inline text-2xl" />
+            Product Cart : <FaShoppingCart className="inline text-2xl" />
           </div>
           <div className=" absolute -top-0 -right-2  text-white ">
             {totalItems > 0 && (
               <span className="bg-red-500 w-5 h-5  rounded-full flex items-center justify-center  text-white">
                 {totalItems}
               </span>
+           
             )}
           </div>
         </Link>
@@ -169,4 +170,11 @@ export default function CartPage() {
       </div>
     </div>
   );
+
+
+
+
+
+
+
 }
