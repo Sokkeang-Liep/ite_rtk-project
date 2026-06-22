@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import {
   ColumnDef,
@@ -9,9 +9,10 @@ import {
   getSortedRowModel,
   useReactTable,
   SortingState,
-} from "@tanstack/react-table"
+} from "@tanstack/react-table";
 
-import { useState } from "react"
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 import {
   Table,
@@ -20,21 +21,25 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
+} from "@/components/ui/table";
+
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[]
-  data?: TData[]
+  columns: ColumnDef<TData, TValue>[];
+  data: TData[];
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data = [],
 }: DataTableProps<TData, TValue>) {
+  const router = useRouter();
 
-  const [globalFilter, setGlobalFilter] = useState("")
-  const [searchField, setSearchField] = useState("all")
-  const [sorting, setSorting] = useState<SortingState>([])
+  const [globalFilter, setGlobalFilter] = useState("");
+  const [searchField, setSearchField] = useState("all");
+  const [sorting, setSorting] = useState<SortingState>([]);
 
   const table = useReactTable({
     data,
@@ -50,74 +55,68 @@ export function DataTable<TData, TValue>({
 
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    getSortedRowModel: getSortedRowModel(),   // SORTING
-    getPaginationRowModel: getPaginationRowModel(), // PAGINATION
+    getSortedRowModel: getSortedRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
 
     globalFilterFn: (row, _, value) => {
-      const search = String(value).toLowerCase()
-      const data = row.original as Record<string, unknown>
+      const search = String(value).toLowerCase();
+      const rowData = row.original as Record<string, unknown>;
 
       if (searchField === "all") {
-        return Object.values(data).some((val) => {
-          if (val == null) return false
+        return Object.values(rowData).some((val) => {
+          if (val == null) return false;
 
           if (typeof val === "object") {
             return JSON.stringify(val)
               .toLowerCase()
-              .includes(search)
+              .includes(search);
           }
 
-          return String(val).toLowerCase().includes(search)
-        })
+          return String(val).toLowerCase().includes(search);
+        });
       }
 
-      const fieldValue = data?.[searchField]
+      const fieldValue = rowData[searchField];
 
-      if (fieldValue == null) return false
+      if (fieldValue == null) return false;
 
       if (typeof fieldValue === "object") {
         return JSON.stringify(fieldValue)
           .toLowerCase()
-          .includes(search)
+          .includes(search);
       }
 
-      return String(fieldValue)
-        .toLowerCase()
-        .includes(search)
+      return String(fieldValue).toLowerCase().includes(search);
     },
-  })
+  });
 
   return (
-    <div className="space-y-3">
-
-      {/* SEARCH + FIELD SELECT */}
+    <div className="space-y-4">
+      {/* SEARCH */}
       <div className="flex gap-2">
-
-        <input
+        <Input
+          placeholder="Search products..."
           value={globalFilter}
           onChange={(e) => setGlobalFilter(e.target.value)}
-          placeholder="Search products..."
-          className="border px-3 py-2 rounded w-full"
+          className="w-full"
         />
 
         <select
           value={searchField}
           onChange={(e) => setSearchField(e.target.value)}
-          className="border px-3 py-2 rounded"
+          className="border rounded-md px-3 py-2"
         >
           <option value="all">All</option>
           <option value="title">Product Name</option>
           <option value="id">ID</option>
           <option value="price">Price</option>
-          <option value="category">Category</option>
+          <option value="product">Product</option>
         </select>
-
       </div>
 
       {/* TABLE */}
       <div className="rounded-md border overflow-hidden">
         <Table>
-
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
@@ -138,7 +137,17 @@ export function DataTable<TData, TValue>({
           <TableBody>
             {table.getRowModel().rows.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id}>
+                <TableRow
+                  key={row.id}
+                  className="cursor-pointer hover:bg-muted/50"
+                  onClick={() => {
+                    const original = row.original as { id?: number };
+
+                    if (original.id) {
+                      router.push(`/products/${original.id}`);
+                    }
+                  }}
+                >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
                       {flexRender(
@@ -151,43 +160,45 @@ export function DataTable<TData, TValue>({
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={columns.length} className="text-center p-6">
+                <TableCell
+                  colSpan={columns.length}
+                  className="text-center p-6"
+                >
                   No results
                 </TableCell>
               </TableRow>
             )}
           </TableBody>
-
         </Table>
       </div>
 
-      {/* PAGINATION  */}
+      {/* PAGINATION */}
       <div className="flex items-center justify-between">
-
-        <button
-          className="border px-3 py-1 rounded"
+        <Button
+          variant="outline"
+          size="sm"
           onClick={() => table.previousPage()}
           disabled={!table.getCanPreviousPage()}
         >
           Previous
-        </button>
+        </Button>
 
         <span className="text-sm">
           Page{" "}
           <strong>
-            {table.getState().pagination?.pageIndex + 1 || 1}
+            {table.getState().pagination.pageIndex + 1}
           </strong>
         </span>
 
-        <button
-          className="border px-3 py-1 rounded"
+        <Button
+          variant="outline"
+          size="sm"
           onClick={() => table.nextPage()}
           disabled={!table.getCanNextPage()}
         >
           Next
-        </button>
-
+        </Button>
       </div>
     </div>
-  )
+  );
 }
